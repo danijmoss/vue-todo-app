@@ -3,6 +3,7 @@ var app = new Vue({
   data: {
     message: "Hello Vue!",
     todo: null,
+    editTodo: null,
     todos: []
   },
   methods: {
@@ -13,10 +14,24 @@ var app = new Vue({
 
       this.todos.push({
         content: todo,
-        finished: false
+        finished: false,
+        isEdited: false
       });
 
       this.todo = null;
+    },
+    edit(todo) {
+      this.editTodo = todo.content;
+      todo.isEdited = true;
+    },
+    update(todo) {
+      if (!this.editTodoIsValid) {
+        return;
+      }
+
+      todo.content = this.editTodo;
+
+      todo.isEdited = false;
     },
     remove(todo) {
       this.todos = this.todos.filter(item => item !== todo);
@@ -25,6 +40,12 @@ var app = new Vue({
   computed: {
     todoIsValid() {
       return !!this.todo;
+    },
+    editTodoIsValid() {
+      return !!this.editTodo;
+    },
+    isBeingEdited() {
+      return this.todos.filter(todo => todo.isEdited).length > 0;
     }
   }
 });
